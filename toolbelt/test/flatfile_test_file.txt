@@ -1,0 +1,5 @@
+key	value
+unique_key1	val1
+unique_key2	val2
+redundant_key	val3
+redundant_key	val4
