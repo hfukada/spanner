@@ -3,7 +3,7 @@ import inspect
 
 
 def validate_args(*expected_types):
-    def decorator_replacement(function_to_validate):
+    def decorator_switcheroo(function_to_validate):
         @functools.wraps(function_to_validate)
         def wrapped_function(*args, **kwargs):
             arg_names = inspect.getargspec(function_to_validate).args
@@ -13,17 +13,19 @@ def validate_args(*expected_types):
                       .format(function=function_to_validate.func_name)
                 raise RuntimeError(msg)
 
-            # get default values for keyword args
+            # default values (if any)
             arg_to_default = dict()
             defaults = inspect.getargspec(function_to_validate).defaults
-            num_defaults = len(defaults)
-            for arg, default in zip(arg_names[-num_defaults:], defaults):
-                arg_to_default[arg] = default
+            if defaults is not None:
+                num_defaults = len(defaults)
+                for arg, default in zip(arg_names[-num_defaults:], defaults):
+                    arg_to_default[arg] = default
 
-            # non-keyword args
+            # non-keyword args - can count on the ordering of these arguments
             arg_values = list(args)
 
-            # keyword args / defaults
+            # keyword args / defaults - these might be in mixed order, i.e., some kwargs specified, some defaulted,
+            # so need to process them at the same time to get the order to match arg_names and expected_types
             num_kwargs_or_defaults = len(arg_names) - len(args)
             if num_kwargs_or_defaults > 0:
                 for arg_name in arg_names[-num_kwargs_or_defaults:]:
@@ -49,6 +51,6 @@ def validate_args(*expected_types):
                                   val=value, actual_type=type(value))
                     raise RuntimeError(msg)
 
-            return function_to_validate(*args)
+            return function_to_validate(*args, **kwargs)
         return wrapped_function
-    return decorator_replacement
+    return decorator_switcheroo
