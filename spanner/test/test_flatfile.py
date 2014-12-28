@@ -1,6 +1,6 @@
 import unittest
 
-from toolbelt import flatfile
+from spanner import flatfile
 
 
 include = True

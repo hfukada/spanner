@@ -15,7 +15,7 @@ def main():
     suites = []
     for test_file in os.listdir(this_dir):
         if test_file.startswith('test_') and test_file.endswith('.py'):
-            test_module_name = 'toolbelt.test.{module}'.format(module=os.path.basename(test_file).split('.')[0])
+            test_module_name = 'spanner.test.{module}'.format(module=os.path.basename(test_file).split('.')[0])
             test_module = importlib.import_module(test_module_name)
             include_test = not hasattr(test_module, 'include') or test_module.include
             if include_test:

@@ -1,6 +1,6 @@
 import os
 
-from toolbelt import countdown
+from spanner import countdown
 
 
 def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,

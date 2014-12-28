@@ -1,7 +1,7 @@
 import argparse
 
-from toolbelt import system
-from toolbelt import __version__
+from spanner import system
+from spanner import __version__
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-m', '--message', help="Release description", type=str)

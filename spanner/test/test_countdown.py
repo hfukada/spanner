@@ -1,7 +1,7 @@
 import unittest
 import sys
 from cStringIO import StringIO
-from toolbelt import countdown
+from spanner import countdown
 
 
 include = True

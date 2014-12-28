@@ -1,7 +1,7 @@
 import sys
 import time
 import collections
-from toolbelt.decorators import validate_args
+from spanner.decorators import validate_args
 
 
 class Timer:

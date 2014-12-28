@@ -1,5 +1,5 @@
 import unittest
-from toolbelt.decorators import validate_args
+from spanner.decorators import validate_args
 
 
 include = True
