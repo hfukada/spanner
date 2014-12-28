@@ -6,7 +6,7 @@ from spanner import __version__
 setup(
     name='spanner',
     version=__version__,
-    description='An accumulation of frequently used utilities / convenience functions for python',
+    description='An accumulation of utilities / convenience functions for python',
     author='Bryan Johnson',
     author_email='d.bryan.johnson@gmail.com',
     packages=['spanner'],
