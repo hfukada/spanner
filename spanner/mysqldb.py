@@ -1,8 +1,25 @@
 import mysql.connector
+import atexit
+
+
+active_connections = dict()
+
+
+@atexit.register
+def close_connections():
+    for connection in active_connections.values():
+        connection.close()
 
 
 def db_connection(host, user, password, database):
-    return mysql.connector.connect(host=host, user=user, password=password, database=database)
+    # check for cached connection
+    key = (host, user, database)
+    if key in active_connections:
+        return active_connections[key]
+
+    connection = mysql.connector.connect(host=host, user=user, password=password, database=database)
+    active_connections[key] = connection
+    return connection
 
 
 def execute(statement, host, user, password, database, remove_duplicates=True, print_statement=False):

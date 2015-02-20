@@ -2,13 +2,12 @@ import sys
 import time
 import collections
 from spanner.decorators import validate_args
-
+asdf = '3'
 
 class Timer:
 
     def __init__(self, total_iterations, label, seconds_between_updates=5):
         self.total_iterations = total_iterations
-        self.iterations_elapsed = 0
         self.label = label
         self.seconds_between_updates = seconds_between_updates
         self.start_time = self.last_update_time = time.time()
