@@ -6,7 +6,7 @@ from spanner import countdown
 def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,
                  return_header=False, num_header_lines_to_skip=0,
                  force_timer=False, timer_label=None):
-    
+
     timer = init_timer(filename, force_timer, timer_label)
 
     with open(filename, 'r') as fh:
