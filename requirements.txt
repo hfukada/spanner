@@ -1,2 +1,3 @@
 #pip install -r requirements.txt --allow-external mysql-connector-python
 mysql-connector-python
+xlwt
