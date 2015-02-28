@@ -2,7 +2,7 @@ import sys
 import time
 import collections
 from spanner.decorators import validate_args
-asdf = '3'
+
 
 class Timer:
 
