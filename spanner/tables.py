@@ -1,4 +1,5 @@
 import os
+import atexit
 import xlwt
 from collections import defaultdict
 
@@ -78,3 +79,30 @@ class HTMLtable(object):
         html = self.template.replace('{TABLE_CONTENTS}', '\n'.join(self.table_rows))
         with open(filename, 'w') as ofh:
             ofh.write(html)
+
+
+class TabTable(object):
+    def __init__(self, colnames, filename):
+        self.ncols = len(colnames)
+        self.ofh = open(filename, 'w')
+        self.add_row(colnames)
+
+    def add_row(self, values):
+        if len(values) != self.ncols:
+            print 'Please provide %d columns (provided: %d)' % (self.ncols, len(values))
+            return
+
+        def strip_non_ascii(x):
+            if isinstance(x, unicode):
+                return x.encode('ascii', 'ignore')
+            elif isinstance(x, str):
+                return str(unicode(x, 'ascii', 'ignore'))
+            else:
+                return str(x)
+
+        self.ofh.write('%s\n' % '\t'.join([strip_non_ascii(x) for x in values]))
+
+    def __del__(self):
+        if not self.ofh.closed:
+            self.ofh.close()
+
