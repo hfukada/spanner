@@ -201,6 +201,8 @@ def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,
             if int(value) == value:
                 return int(value)
 
+        return value
+
     def select_cols(indices, values):
         if len(indices) == 1:
             return cast_cell_value(values[indices[0]])
