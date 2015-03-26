@@ -18,4 +18,4 @@ def run_command(command, logfile=None, print_output=False):
         if stdout != '':
             print 'stdout: %s' % stdout
 
-    return str(stdout), str(stderr)
+    return str(stdout.rstrip()), str(stderr.rstrip())
