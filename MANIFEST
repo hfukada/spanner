@@ -5,5 +5,6 @@ spanner/__init__.py
 spanner/countdown.py
 spanner/decorators.py
 spanner/flatfile.py
-spanner/mysql.py
+spanner/mysqldb.py
 spanner/system.py
+spanner/tables.py
