@@ -1,5 +1,4 @@
 import os
-import functools
 import xlwt
 import xlrd
 from collections import defaultdict
