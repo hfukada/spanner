@@ -181,22 +181,30 @@ def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,
     if timer is not None:
         timer.tick()
 
-    def cast_to_original_data_type(value):
-        try:
-            return int(value)
-        except ValueError:
+    def cast_cell_value(value):
+        if isinstance(value, str):
+            x = str(unicode(value, 'ascii', 'ignore'))
             try:
-                return float(value)
-            except ValueError:
-                return value
+                return int(x.replace(',', ''))
+            except:
+                try:
+                    return float(x.replace(',', ''))
+                except:
+                    return x
+        elif isinstance(value, unicode):
+            return cast_cell_value(value.encode('ascii', 'ignore'))
+
+        elif isinstance(value, float):
+            if int(value) == value:
+                return int(value)
 
     def select_cols(indices, values):
         if len(indices) == 1:
-            return cast_to_original_data_type(values[indices[0]])
+            return cast_cell_value(values[indices[0]])
 
         val = []
         for index in indices:
-            value = cast_to_original_data_type(values[index])
+            value = cast_cell_value(values[index])
             val.append(value)
 
         return tuple(val)
