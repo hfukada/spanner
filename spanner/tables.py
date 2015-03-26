@@ -102,8 +102,8 @@ class TabTable(object):
 
 
 def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,
-                 header_row_offset=0, xls_sheetname=None,
-                 force_timer=False, timer_label=None):
+                 header_row=0, xls_sheetname=None, force_timer=False,
+                 timer_label=None):
 
     timer = init_timer(filename, force_timer, timer_label)
 
@@ -145,7 +145,7 @@ def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,
 
     rr = make_row_reader()
 
-    for _ in xrange(header_row_offset - 1):
+    for _ in xrange(header_row):
         rr.next_row()
 
     columns = rr.next_row()
@@ -174,7 +174,9 @@ def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,
                     try:
                         col_indices.append(col_names_lwr.index(col))
                     except ValueError:
-                        raise Exception('Column not found: ' + col)
+                        raise Exception('Column not found: ' + col +
+                                        '\nAvailable columns: ' +
+                                        str(col_names))
 
         columns = rr.next_row()
 
@@ -191,6 +193,7 @@ def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,
                     return float(x.replace(',', ''))
                 except:
                     return x
+
         elif isinstance(value, unicode):
             return cast_cell_value(value.encode('ascii', 'ignore'))
 
@@ -220,30 +223,34 @@ def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,
             break
 
         vals = select_cols(col_indices, columns)
-        yield OrderedDict((col_names[col_indices[i]], v)
-                           for i, v in enumerate(vals))
-
         columns = rr.next_row()
         if timer is not None:
             timer.tick()
 
+        yield OrderedDict((col_names[col_indices[i]], v)
+                          for i, v in enumerate(vals))
+
+
 
 def load_dict(filename, key_cols, val_cols, delimiter='\t',
-              force_unique_keys=False, no_header=False, header_row_offset=0,
-              force_timer=False, timer_label=None):
+              force_unique_keys=False, no_header=False, header_row=0,
+              xls_sheetname=None, force_timer=False, timer_label=None):
 
     multiple_values_found_for_at_least_one_key = False
 
     d = dict()
     for kvps in row_iterator(filename, key_cols + val_cols,
-                             delimiter=delimiter, no_header=no_header,
-                             header_row_offset=header_row_offset,
-                             force_timer=force_timer, timer_label=timer_label):
+                             delimiter=delimiter,
+                             no_header=no_header,
+                             header_row=header_row,
+                             xls_sheetname=xls_sheetname,
+                             force_timer=force_timer,
+                             timer_label=timer_label):
         def get_vals(cols):
             if len(cols) == 1:
-                return kvps[cols[0].lower()]
+                return kvps[cols[0]]
             else:
-                tuple(kvps[col.lower()] for col in cols)
+                return tuple(kvps[col] for col in cols)
 
         key = get_vals(key_cols)
         val = get_vals(val_cols)
@@ -266,9 +273,20 @@ def load_dict(filename, key_cols, val_cols, delimiter='\t',
     if multiple_values_found_for_at_least_one_key:
         for key in d:
             if type(d[key]) is set:
-                d[key] = list(d[key])
+                vals = list(d[key])
             else:
-                d[key] = [d[key]]
+                vals = [d[key]]
+
+            d[key] = []
+            for vs in vals:
+                if len(val_cols) > 1:
+                    d[key].append({k: v for k, v in zip(val_cols, vs)})
+                else:
+                    d[key] = vals
+    else:
+        for key in d:
+            if len(val_cols) > 1:
+                d[key] = {k: v for k, v in zip(val_cols, d[key])}
 
     return d
 
@@ -293,7 +311,3 @@ def init_timer(filename, force_timer=False, timer_label=None):
         return countdown.timer(total_iterations=linecount, label=timer_label)
 
     return None
-
-
-if __name__ == '__main__':
-    print
