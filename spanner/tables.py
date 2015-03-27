@@ -100,6 +100,7 @@ class TabTable(object):
     def __del__(self):
         self.close()
 
+
 ###############################################################################
 
 
@@ -107,7 +108,7 @@ def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,
                  header_row=0, xls_sheetname=None, force_timer=False,
                  timer_label=None, as_dict=False):
 
-    timer = init_timer(filename, force_timer, timer_label)
+    timer = __init_timer(filename, force_timer, timer_label)
 
     def make_row_reader():
         if filename.split('.')[-1].lower() in ('xls', 'xlsx'):
@@ -298,7 +299,7 @@ def load_dict(filename, key_cols, val_cols, delimiter='\t',
     return d
 
 
-def init_timer(filename, force_timer=False, timer_label=None):
+def __init_timer(filename, force_timer=False, timer_label=None):
     if not os.path.isfile(filename):
         raise Exception('File does not exist: ' + filename)
 
