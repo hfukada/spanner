@@ -93,17 +93,19 @@ class TabTable(object):
         self.ofh.write(
             '%s\n' % '\t'.join([strip_non_ascii(x) for x in values]))
 
-    def __del__(self):
+    def close(self):
         if not self.ofh.closed:
             self.ofh.close()
 
+    def __del__(self):
+        self.close()
 
 ###############################################################################
 
 
 def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,
                  header_row=0, xls_sheetname=None, force_timer=False,
-                 timer_label=None):
+                 timer_label=None, as_dict=False):
 
     timer = init_timer(filename, force_timer, timer_label)
 
@@ -229,9 +231,11 @@ def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,
         if timer is not None:
             timer.tick()
 
-        yield OrderedDict((col_names[col_indices[i]], v)
-                          for i, v in enumerate(vals))
-
+        if as_dict:
+            yield OrderedDict((col_names[col_indices[i]], v)
+                              for i, v in enumerate(vals))
+        else:
+            yield vals
 
 
 def load_dict(filename, key_cols, val_cols, delimiter='\t',
@@ -247,7 +251,8 @@ def load_dict(filename, key_cols, val_cols, delimiter='\t',
                              header_row=header_row,
                              xls_sheetname=xls_sheetname,
                              force_timer=force_timer,
-                             timer_label=timer_label):
+                             timer_label=timer_label,
+                             as_dict=True):
         def get_vals(cols):
             if len(cols) == 1:
                 return kvps[cols[0]]
