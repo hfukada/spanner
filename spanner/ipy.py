@@ -11,7 +11,7 @@ except:
 
 last_keystroke = time.time()
 def search_select(df, search_cols, callback, mode='flat', search_on_type=True,
-                  initial_filter='', label=None):
+                  initial_filter='', label=''):
     """
     Creates and displays searchable selector(s).  In "flat" mode, the provided
     columns are combined into one searchable field.  In "nested" mode, a
@@ -99,8 +99,11 @@ def search_select(df, search_cols, callback, mode='flat', search_on_type=True,
 
     all_widgets = sorted_selectors[:]
     if mode in ('flat', 'all'):
-        wflat = widgets.DropdownWidget(
-            description=label if mode == 'flat' else 'All')
+        if mode == 'flat':
+            desc = '' if label is None else label
+        else:
+            desc = 'All'
+        wflat = widgets.DropdownWidget(description=desc)
         wflat.on_trait_change(lambda: callback(wflat.value), 'value')
         all_widgets.append(wflat)
         widgets_to_update_on_search.append(wflat)
