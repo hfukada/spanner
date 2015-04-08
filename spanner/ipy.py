@@ -41,7 +41,7 @@ def search_select(df, search_cols, callback, mode='flat', search_on_type=True,
             s = [False] * len(df)
             for st in wfilter.value.split('|'):
                 s |= df[disp_cols].apply(lambda r:
-                                            any([st.lower()
+                                            any([st.lower().strip()
                                                  in c.lower()
                                                  for c in r]),
                                          axis=1)
@@ -109,13 +109,13 @@ def search_select(df, search_cols, callback, mode='flat', search_on_type=True,
         widgets_to_update_on_search.append(wflat)
 
     wfilter = widgets.TextWidget(description='Filter', value=initial_filter)
-    all_widgets.append(wfilter)
 
     def update_options(w=None):
         for w in widgets_to_update_on_search:
             populate_options(w)
 
     if search_on_type:
+        all_widgets.append(wfilter)
         def update_on_keystroke():
             global last_keystroke
             now = time.time()
@@ -124,9 +124,13 @@ def search_select(df, search_cols, callback, mode='flat', search_on_type=True,
 
         wfilter.on_trait_change(update_on_keystroke, 'value')
     else:
+        container = widgets.ContainerWidget()
+        container.remove_class('vbox')
+        container.add_class('hbox')
         b = widgets.ButtonWidget(description='Search')
         b.on_click(update_options)
-        all_widgets.append(b)
+        container.children = [wfilter, b]
+        all_widgets.append(container)
 
     container = widgets.ContainerWidget()
     display.display(container)

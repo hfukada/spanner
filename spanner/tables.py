@@ -6,6 +6,15 @@ from collections import OrderedDict
 from spanner import countdown
 
 
+def strip_non_ascii(x):
+    if isinstance(x, unicode):
+        return x.encode('ascii', 'ignore')
+    elif isinstance(x, str):
+        return unicode(x, 'ascii', 'ignore').encode('ascii')
+    else:
+        return str(x)
+
+
 class ExcelTable(object):
     # keep formatting objects in a dictionary; otherwise, each instance is
     # treated as a separate entity by excel, which eventually (limit 4k)
@@ -61,7 +70,7 @@ class ExcelTable(object):
         self.sheet_to_rownum[sheet] += 1
 
         for (col, (val, cell_format)) in enumerate(zip(values, cell_formats)):
-            sheet.write(row, col, val, cell_format)
+            sheet.write(row, col, strip_non_ascii(val), cell_format)
 
     def write_to_file(self, filename):
         self.book.save(filename)
@@ -71,7 +80,7 @@ class ExcelTable(object):
 
 
 class TabTable(object):
-    def __init__(self, colnames, filename):
+    def __init__(self, colnames, filename, delimter='\t'):
         self.ncols = len(colnames)
         self.ofh = open(filename, 'w')
         self.add_row(colnames)
@@ -81,14 +90,6 @@ class TabTable(object):
             print 'Please provide %d columns (provided: %d)' \
                   % (self.ncols, len(values))
             return
-
-        def strip_non_ascii(x):
-            if isinstance(x, unicode):
-                return x.encode('ascii', 'ignore')
-            elif isinstance(x, str):
-                return str(unicode(x, 'ascii', 'ignore'))
-            else:
-                return str(x)
 
         self.ofh.write(
             '%s\n' % '\t'.join([strip_non_ascii(x) for x in values]))
