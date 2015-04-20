@@ -12,7 +12,7 @@ setup(
     packages=['spanner'],
     url='https://github.com/dbjohnson/python-utils',
     download_url='https://github.com/dbjohnson/spanner/tarball/%s' % __version__,
-    install_requires = ['mysql-connector-python>=2.0.3'
+    install_requires = ['mysql-connector-python>=2.0.3',
                         'xlrd>=0.9.3',
                         'xlwt>=1.0.0']
 )
