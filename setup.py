@@ -1,12 +1,7 @@
 #!/usr/bin/env python
 
-import os
 from setuptools import setup
 from spanner import __version__
-
-d = os.path.realpath(os.path.dirname(__file__))
-with open(os.path.join(d, 'requirements.txt'), 'r') as fh:
-    reqs = [i.strip() for i in fh]
 
 setup(
     name='spanner',
@@ -17,5 +12,7 @@ setup(
     packages=['spanner'],
     url='https://github.com/dbjohnson/python-utils',
     download_url='https://github.com/dbjohnson/spanner/tarball/%s' % __version__,
-    install_requires=reqs
+    install_requires=['mysql-connector-python>=2.0.3',
+                      'xlrd>=0.9.3',
+                      'xlwt>=0.7.5']
 )
