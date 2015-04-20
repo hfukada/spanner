@@ -3,6 +3,7 @@
 from distutils.core import setup
 from spanner import __version__
 
+
 setup(
     name='spanner',
     version=__version__,
@@ -12,7 +13,5 @@ setup(
     packages=['spanner'],
     url='https://github.com/dbjohnson/python-utils',
     download_url='https://github.com/dbjohnson/spanner/tarball/%s' % __version__,
-    install_requires = ['mysql-connector-python>=2.0.3',
-                        'xlrd>=0.9.3',
-                        'xlwt>=1.0.0']
+    install_requires=[i.strip() for i in open("requirements.txt").readlines()]
 )
