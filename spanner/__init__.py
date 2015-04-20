@@ -1,3 +1,6 @@
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 __all__ = ['countdown', 'decorators', 'mysqldb', 'system', 'tables', 'ipy']
-from . import *
+try:
+    from . import *
+except ImportError:
+    pass  # imports will fail during dependency collection
