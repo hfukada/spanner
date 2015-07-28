@@ -1,5 +1,5 @@
-__version__ = '0.3.3'
-__all__ = ['countdown', 'decorators', 'mysqldb', 'system', 'tables', 'ipy']
+__version__ = '0.3.4'
+__all__ = ['countdown', 'decorators', 'system', 'tables', 'ipy']
 try:
     from . import *
 except ImportError:

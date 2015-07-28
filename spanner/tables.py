@@ -1,6 +1,7 @@
 import os
 import xlwt
 import xlrd
+import warnings
 from collections import defaultdict
 from collections import OrderedDict
 from spanner import countdown
@@ -12,7 +13,7 @@ def strip_non_ascii(x):
     elif isinstance(x, str):
         return unicode(x, 'ascii', 'ignore').encode('ascii')
     else:
-        return str(x)
+        return x
 
 
 class ExcelTable(object):
@@ -67,6 +68,10 @@ class ExcelTable(object):
                                    % sorted(str(self.easyxfs.keys())))
 
         row = self.sheet_to_rownum[sheet]
+        if row >= 65530:
+            warnings.warn('Maximum number of rows reached', RuntimeWarning)
+            return
+
         self.sheet_to_rownum[sheet] += 1
 
         for (col, (val, cell_format)) in enumerate(zip(values, cell_formats)):
@@ -92,7 +97,7 @@ class TabTable(object):
             return
 
         self.ofh.write(
-            '%s\n' % '\t'.join([strip_non_ascii(x) for x in values]))
+            '%s\n' % '\t'.join([str(strip_non_ascii(x)) for x in values]))
 
     def close(self):
         if not self.ofh.closed:
@@ -180,7 +185,7 @@ def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,
                     except ValueError:
                         raise Exception('Column not found: ' + col +
                                         '\nAvailable columns: ' +
-                                        str(col_names))
+                                        str(col_names_lwr))
 
         columns = rr.next_row()
 

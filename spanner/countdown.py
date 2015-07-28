@@ -6,14 +6,12 @@ from spanner.decorators import validate_args
 
 
 class Timer:
-    def __init__(self, total_iterations, label, seconds_between_updates=5,
-                 use_logging=True):
+    def __init__(self, total_iterations, label, seconds_between_updates=5):
         self.total_iterations = total_iterations
         self.iterations_elapsed = 0
         self.label = label
         self.seconds_between_updates = seconds_between_updates
         self.start_time = self.last_update_time = time.time()
-        self.use_logging = use_logging
 
     def tick(self):
         self.iterations_elapsed += 1
@@ -44,11 +42,9 @@ class Timer:
         if self.label is not None:
             status = '%s: %s' % (self.label, status)
 
-        if self.use_logging:
-            logging.info(status)
-        else:
-            print status
-            sys.stdout.flush()
+        logging.info(status)
+        print status
+        sys.stdout.flush()
 
     def seconds_per_iteration(self):
         now = time.time()
