@@ -110,6 +110,70 @@ class TabTable(object):
 ###############################################################################
 
 
+class HTMLtable(object):
+    template = \
+        """
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <style>
+        table {
+            width:100%%;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #eee;
+        }
+        tr:nth-child(odd) {
+           background-color:#fff;
+        }
+        th {
+            background-color: black;
+            color: white;
+        }
+        </style>
+        </head>
+        <body>
+
+        <table>
+            %s
+          %s
+        </table>
+        </body>
+        </html>
+        """
+
+    def __init__(self, columns):
+        self.columns = columns
+        self.header = self.__wrap_row(self.columns, 'th')
+        self.rows = []
+
+    def add_row(self, kvps):
+        vals = [kvps.get(col, '') for col in self.columns]
+        self.rows.append(self.__wrap_row(vals, 'td'))
+
+    def __wrap_row(self, values, tag):
+        def wrap_tags(val):
+            return '\t<{tag}>{val}</{tag}>'.format(tag=tag, val=val)
+
+        row = '\n'.join([wrap_tags(col) for col in values])
+        return '<tr>\n{row}\n</tr>'.format(row=row)
+
+    def get_html(self):
+        # return self.template.format(header=self.header, rows='\n'.join(self.rows))
+        return self.template %(self.header, '\n'.join(self.rows))
+
+
+###############################################################################
+
+
 def row_iterator(filename, selected_cols=None, delimiter='\t', no_header=False,
                  header_row=0, xls_sheetname=None, force_timer=False,
                  timer_label=None, as_dict=False):
