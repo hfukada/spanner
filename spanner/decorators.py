@@ -1,6 +1,21 @@
 import functools
 import inspect
 
+from frozendict import frozendict
+
+
+def memoize(f):
+    class Memoized(dict):
+        def __call__(self, *args, **kwargs):
+            return self[(args, frozendict(kwargs))]
+
+        def __missing__(self, key):
+            args, kwargs = key
+            ret = self[key] = f(*args, **kwargs)
+            return ret
+
+    return Memoized()
+
 
 def validate_args(*expected_types):
     def decorator_switcheroo(function_to_validate):
