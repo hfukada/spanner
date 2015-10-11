@@ -4,6 +4,16 @@ import inspect
 from frozendict import frozendict
 
 
+class singleton:
+    def __init__(self, obj):
+        self.obj= obj
+        self.instance = None
+
+    def __call__(self, *args, **kwargs):
+        if self.instance == None:
+            self.instance = self.obj(*args, **kwargs)
+        return self.instance
+
 def memoize(f):
     class Memoized(dict):
         def __call__(self, *args, **kwargs):
