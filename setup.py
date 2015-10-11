@@ -3,6 +3,10 @@
 from setuptools import setup
 from spanner import __version__
 
+
+with open('requirements.txt') as f:
+        required = f.read().splitlines()
+
 setup(
     name='spanner',
     version=__version__,
@@ -12,6 +16,5 @@ setup(
     packages=['spanner'],
     url='https://github.com/dbjohnson/python-utils',
     download_url='https://github.com/dbjohnson/spanner/tarball/%s' % __version__,
-    install_requires=['xlrd>=0.9.3',
-                      'xlwt>=0.7.5']
+    install_requires=required
 )
